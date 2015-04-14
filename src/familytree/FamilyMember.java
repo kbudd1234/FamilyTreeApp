@@ -12,6 +12,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 /**
@@ -22,18 +23,19 @@ public class FamilyMember {
     private final StringProperty name = new SimpleStringProperty(this, "name", "");
     private final IntegerProperty age = new SimpleIntegerProperty(this, "age", 0);
     private final StringProperty spouseName = new SimpleStringProperty(this, "spouseName", "");
-    private final ListProperty<FamilyMember> listOfChildren = new SimpleListProperty(this, "listOfChildren", null);
+    private final ListProperty<FamilyMember> listOfChildren = new SimpleListProperty<>(FXCollections.observableArrayList());
     private final StringProperty nationality = new SimpleStringProperty(this, "nationality", "");
     private final StringProperty stateOfResidence = new SimpleStringProperty(this, "stateOfResidence", "");
 
     
     public FamilyMember() {
-        this("", 0);
+        this("", 0, "single");
     }
     
-    public FamilyMember(String name, int age) {
+    public FamilyMember(String name, int age, String spouse) {
         this.name.set(name);
         this.age.set(age);
+        this.spouseName.set(spouse);
     }
     
     public FamilyMember(FamilyMember familyMember) {
@@ -45,74 +47,74 @@ public class FamilyMember {
         this.stateOfResidence.set(familyMember.getStateOfResidence());
     }
     
-    private String getName() {
+    public String getName() {
         return name.get();
     }
 
-    private void setName(String value) {
+    public void setName(String value) {
         name.set(value);
     }
 
-    private StringProperty nameProperty() {
+    public StringProperty nameProperty() {
         return name;
     }
     
-    private int getAge() {
+    public int getAge() {
         return age.get();
     }
 
-    private void setAge(int value) {
+    public void setAge(int value) {
         age.set(value);
     }
 
-    private IntegerProperty ageProperty() {
+    public IntegerProperty ageProperty() {
         return age;
     }
-    private String getSpouseName() {
+    public String getSpouseName() {
         return spouseName.get();
     }
 
-    private void setSpouseName(String value) {
+    public void setSpouseName(String value) {
         spouseName.set(value);
     }
 
-    private StringProperty spouseNameProperty() {
+    public StringProperty spouseNameProperty() {
         return spouseName;
     }
     
-    private ObservableList getListOfChildren() {
+    public ObservableList getListOfChildren() {
         return listOfChildren.get();
     }
 
-    private void setListOfChildren(ObservableList value) {
+    public void setListOfChildren(ObservableList value) {
         listOfChildren.set(value);
     }
 
-    private ListProperty listOfChildrenProperty() {
+    public ListProperty listOfChildrenProperty() {
         return listOfChildren;
     }
     
-    private String getNationality() {
+    public String getNationality() {
         return nationality.get();
     }
 
-    private void setNationality(String value) {
+    public void setNationality(String value) {
         nationality.set(value);
     }
 
-    private StringProperty nationalityProperty() {
+    public StringProperty nationalityProperty() {
         return nationality;
     }
     
-    private String getStateOfResidence() {
+    public String getStateOfResidence() {
         return stateOfResidence.get();
     }
 
-    private void setStateOfResidence(String value) {
+    public void setStateOfResidence(String value) {
         stateOfResidence.set(value);
     }
 
-    private StringProperty stateOfResidenceProperty() {
+    public StringProperty stateOfResidenceProperty() {
         return stateOfResidence;
     }
 
@@ -160,7 +162,7 @@ public class FamilyMember {
 
     @Override
     public String toString() {
-        return "FamilyMember{" + "name=" + name + ", age=" + age + ", spouseName=" + spouseName + '}';
+        return String.format("%25s%3d%25s", getName(), getAge(), getSpouseName());
     }
     
     public String printInfo() {

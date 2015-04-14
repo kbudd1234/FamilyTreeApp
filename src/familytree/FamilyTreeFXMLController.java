@@ -7,10 +7,8 @@ package familytree;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
+import javafx.collections.MapChangeListener;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Label;
 
 /**
  *
@@ -18,18 +16,43 @@ import javafx.scene.control.Label;
  */
 public class FamilyTreeFXMLController implements Initializable {
     
-    @FXML
-    private Label label;
+    final FamilyTreeMap familyTreeMap = FamilyTreeMap.getInstance();
+    final FamilyMember kevin = new FamilyMember("Kevin Budd", 31, "Lucy");
+    final FamilyMember ever = new FamilyMember("Ever Budd", 1, "Single");
     
-    @FXML
-    private void handleButtonAction(ActionEvent event) {
-        System.out.println("You clicked me!");
-        label.setText("Hello World!");
-    }
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        
+        //familyTreeMap.addListener(mapChangeListener);
+        populateFamily();
+        
+        try {
+        kevin.listOfChildrenProperty().add(ever);
+        } catch (NullPointerException ex) {
+        
+        }
+        System.out.println(kevin.listOfChildrenProperty().size());
+        System.out.println(kevin.getListOfChildren());
+        
     }    
+    
+    public void populateFamily() {
+        familyTreeMap.addFamilyMember(kevin);
+        familyTreeMap.addFamilyMember(ever);
+        
+        
+    }
+    
+    private static final MapChangeListener<Integer, FamilyMember> mapChangeListener = (change) -> {
+        if (change.wasAdded() && change.wasRemoved()) {
+            System.out.println("\tUPDATED");
+        } else if (change.wasAdded()) {
+            System.out.println("\tADDED");
+        } else if (change.wasRemoved()) {
+            System.out.println("\tREMOVED");
+        }
+        System.out.println(change.getMap());
+    };
     
 }
