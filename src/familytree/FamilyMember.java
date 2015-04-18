@@ -162,7 +162,7 @@ public class FamilyMember {
 
     @Override
     public String toString() {
-        return String.format("%25s%3d%25s", getName(), getAge(), getSpouseName());
+        return String.format("%-15s%3d%15s", getName(), getAge(), getSpouseName());
     }
     
     public String printInfo() {

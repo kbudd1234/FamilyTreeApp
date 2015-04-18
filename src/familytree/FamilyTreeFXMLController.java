@@ -7,8 +7,11 @@ package familytree;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-import javafx.collections.MapChangeListener;
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
 
 /**
  *
@@ -16,43 +19,61 @@ import javafx.fxml.Initializable;
  */
 public class FamilyTreeFXMLController implements Initializable {
     
-    final FamilyTreeMap familyTreeMap = FamilyTreeMap.getInstance();
-    final FamilyMember kevin = new FamilyMember("Kevin Budd", 31, "Lucy");
-    final FamilyMember ever = new FamilyMember("Ever Budd", 1, "Single");
+    private FamilyMember kevin = new FamilyMember("Kevin Budd", 31, "Lucy");
+    private FamilyMember lucy = new FamilyMember("Lucy Mara", 28, "Kevin");
+    private FamilyMember ever = new FamilyMember("Ever Budd", 1, "Single");
+    private FamilyMember mike = new FamilyMember("Mike Budd", 56, "Lynn");
+    private FamilyMember lynn = new FamilyMember("Lynn Budd", 56, "Mike");
+    private FamilyMember jen = new FamilyMember("Jennifer Bredberg", 34, "Jim");
+    private FamilyMember chris = new FamilyMember("Chris Budd", 33, "Kate");
+    private FamilyMember kyle = new FamilyMember("Kyle Budd", 30, "Single");
+    private FamilyMember ben = new FamilyMember("Ben Bredberg", 4, "Single");
+    private FamilyMember madelyn = new FamilyMember("Madelyn Bredberg", 2, "Single");
     
+    private TreeItem<FamilyMember> root;
+    private TreeItem<FamilyMember> jenTree = new TreeItem<>(jen);
+    private TreeItem<FamilyMember> chrisTree = new TreeItem<>(chris);
+    private TreeItem<FamilyMember> kevinTree = new TreeItem<>(kevin);
+    private TreeItem<FamilyMember> kyleTree = new TreeItem<>(kyle);
+    
+    
+    
+    @FXML
+    private TextField txtName;
+    @FXML
+    private TextField txtAge;
+    @FXML
+    private TextField txtSpouseName;
+    @FXML
+    private TextField txtNumberOfChildren;
+    @FXML
+    private TextField txtNationality;
+    @FXML
+    private TextField txtStateOfResidence;
+    @FXML
+    private TreeView<FamilyMember> treeView;
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         
-        //familyTreeMap.addListener(mapChangeListener);
-        populateFamily();
-        
-        try {
-        kevin.listOfChildrenProperty().add(ever);
-        } catch (NullPointerException ex) {
-        
-        }
-        System.out.println(kevin.listOfChildrenProperty().size());
-        System.out.println(kevin.getListOfChildren());
+        populateFamilyTree();
         
     }    
     
-    public void populateFamily() {
-        familyTreeMap.addFamilyMember(kevin);
-        familyTreeMap.addFamilyMember(ever);
+    public void populateFamilyTree() {
         
+        root = new TreeItem<>(mike);
+        
+        root.getChildren().addAll(jenTree, chrisTree, kevinTree, kyleTree);
+        
+        root.setExpanded(false);
+        
+        jenTree.getChildren().addAll(new TreeItem<>(ben), new TreeItem<>(madelyn));
+        
+        kevinTree.getChildren().add(new TreeItem<>(ever));
+        
+        treeView.setRoot(root);
         
     }
-    
-    private static final MapChangeListener<Integer, FamilyMember> mapChangeListener = (change) -> {
-        if (change.wasAdded() && change.wasRemoved()) {
-            System.out.println("\tUPDATED");
-        } else if (change.wasAdded()) {
-            System.out.println("\tADDED");
-        } else if (change.wasRemoved()) {
-            System.out.println("\tREMOVED");
-        }
-        System.out.println(change.getMap());
-    };
     
 }
