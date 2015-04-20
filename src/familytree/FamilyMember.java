@@ -29,13 +29,15 @@ public class FamilyMember {
 
     
     public FamilyMember() {
-        this("", 0, "single");
+        this("", 0, "single", "American", "Unknown" );
     }
     
-    public FamilyMember(String name, int age, String spouse) {
+    public FamilyMember(String name, int age, String spouse, String nationality, String stateOfResidence) {
         this.name.set(name);
         this.age.set(age);
         this.spouseName.set(spouse);
+        this.nationality.set(nationality);
+        this.stateOfResidence.set(stateOfResidence);
     }
     
     public FamilyMember(FamilyMember familyMember) {
