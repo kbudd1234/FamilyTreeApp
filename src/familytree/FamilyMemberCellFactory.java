@@ -5,8 +5,7 @@
  */
 package familytree;
 
-import javafx.scene.control.TextField;
-import javafx.scene.control.Tooltip;
+import javafx.scene.Node;
 import javafx.scene.control.TreeCell;
 
 /**
@@ -18,38 +17,26 @@ public class FamilyMemberCellFactory extends TreeCell<FamilyMember> {
     public FamilyMemberCellFactory (){
     }
     
-    private TextField textField;
-    
-    private void createTextField() {
-            textField = new TextField(getItem().getName());
-            
-        }
- 
-    
-    
+    private Node graphic;
+        
     @Override
-        public void cancelEdit() {
-            super.cancelEdit();
-            setText((String) getItem().getName());
+    public void updateItem(FamilyMember item, boolean empty) {
+        super.updateItem(item, empty);
+        
+        if (empty) {
+            setText(null);
+            setGraphic(null);
+        } else {
+            setText(getString());
             setGraphic(getTreeItem().getGraphic());
-        }
-    
-    static FamilyTreeFXMLController fm = new FamilyTreeFXMLController();
-    
-    public static void main(String[] args) {
-        
-        
-        
-        try {
-        Tooltip printInfoToolTip = new Tooltip(fm.selectedFamilyMember().printInfo());
-        } catch (NullPointerException ex) {
             
         }
+                
     }
-    
-    
 
-
-    
-    
+    private String getString() {
+        return getItem() == null ? "" : getItem().toString();
+    }
 }
+ 
+

@@ -16,7 +16,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
-import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 
@@ -25,7 +24,7 @@ import javafx.scene.control.TreeView;
  * @author kevinbudd
  */
 public class FamilyTreeFXMLController implements Initializable {
-    
+
     private FamilyMember gerry = new FamilyMember("Gerry DeGraff", 83, "Richard", "American", "Illinois");
     private FamilyMember lynn = new FamilyMember("Lynn Budd", 56, "Mike", "American", "Illinois");
     private FamilyMember jody = new FamilyMember("Jody Land", 54, "Jay", "American", "Illinois");
@@ -43,15 +42,15 @@ public class FamilyTreeFXMLController implements Initializable {
     //private FamilyMember lucy = new FamilyMember("Lucy Mara", 28, "Kevin", "American", "Illinois");
     private FamilyMember ever = new FamilyMember("Ever Budd", 1, "Single", "American", "Illinois");
     //private FamilyMember mike = new FamilyMember("Mike Budd", 56, "Lynn", "American", "Illinois");
-    
+
     private FamilyMember jen = new FamilyMember("Jennifer Bredberg", 34, "Jim", "American", "Illinois");
     private FamilyMember chris = new FamilyMember("Chris Budd", 33, "Kate", "American", "Illinois");
     private FamilyMember kyle = new FamilyMember("Kyle Budd", 30, "Single", "American", "Illinois");
     private FamilyMember ben = new FamilyMember("Ben Bredberg", 4, "Single", "American", "Illinois");
     private FamilyMember madelyn = new FamilyMember("Madelyn Bredberg", 2, "Single", "American", "Illinois");
-    
+
     private TreeItem<FamilyMember> root = new TreeItem<>(gerry);
-    
+
     private TreeItem<FamilyMember> jenTree = new TreeItem<>(jen);
     private TreeItem<FamilyMember> chrisTree = new TreeItem<>(chris);
     private TreeItem<FamilyMember> kevinTree = new TreeItem<>(kevin);
@@ -68,10 +67,10 @@ public class FamilyTreeFXMLController implements Initializable {
     private TreeItem<FamilyMember> erinTree = new TreeItem<>(erin);
     private TreeItem<FamilyMember> jenniferTree = new TreeItem<>(jennifer);
     private TreeItem<FamilyMember> kurtTree = new TreeItem<>(kurt);
-    
+
     private FamilyMember selectedFamilyMember = null;
     private NumberFormat format = NumberFormat.getInstance();
-    
+
     @FXML
     private TextField txtName;
     @FXML
@@ -88,69 +87,69 @@ public class FamilyTreeFXMLController implements Initializable {
     private TreeView<FamilyMember> treeView;
     @FXML
     private Button btnUpdate;
-    
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        
+
         populateFamilyTree();
-        
+
         treeView.setRoot(root);
-        
+
         treeView.getSelectionModel().selectedItemProperty().addListener(treeSelectionListener);
-        
+
         treeView.setEditable(true);
-        
-        treeView.setCellFactory((TreeView<FamilyMember> fm) -> 
-            new FamilyMemberCellFactory());
-        
-    }    
-    
+
+        treeView.setCellFactory((TreeView<FamilyMember> fm) -> new FamilyMemberCellFactory());
+
+    }
+
     public void populateFamilyTree() {
-        
+
         root.getChildren().addAll(lynnTree, jodyTree, jeanineTree, christineTree);
-        
+
         root.setExpanded(false);
-        
+
         lynnTree.getChildren().addAll(jenTree, chrisTree, kevinTree, kyleTree);
         jenTree.getChildren().addAll(new TreeItem<>(ben), new TreeItem<>(madelyn));
         kevinTree.getChildren().add(new TreeItem<>(ever));
-        
+
         jodyTree.getChildren().addAll(bridgetTree, erinTree, jenniferTree, kurtTree);
-        
+
         christineTree.getChildren().addAll(kellyTree, scottTree, kevinDawsonTree, bradleyTree);
-        
+
     }
-    
+
     public FamilyMember selectedFamilyMember() {
         return selectedFamilyMember;
     }
-    
-    private final ChangeListener<TreeItem<FamilyMember>> treeSelectionListener =
-            (ov, oldValue, newValue) -> {
+
+    private final ChangeListener<TreeItem<FamilyMember>> treeSelectionListener
+            = (ov, oldValue, newValue) -> {
                 TreeItem<FamilyMember> treeItem = newValue;
-                
+
                 if (treeItem == null || treeItem.equals(treeView.getRoot())) {
                     clearTextFields();
                     return;
                 }
-                
+
                 selectedFamilyMember = new FamilyMember(treeItem.getValue());
-                familyMemberTextFieldBindings(selectedFamilyMember);
                 
+                familyMemberTextFieldBindings(selectedFamilyMember);
+
             };
-    
-    private void clearTextFields(){
-        
+
+    private void clearTextFields() {
+
         txtName.setText("");
         txtAge.setText("");
         txtSpouseName.setText("");
         txtNumberOfChildren.setText("");
         txtNationality.setText("");
         txtStateOfResidence.setText("");
-                
+
     }
-    
-    private void familyMemberTextFieldBindings(FamilyMember fm){
+
+    private void familyMemberTextFieldBindings(FamilyMember fm) {
         txtName.textProperty().bindBidirectional(fm.nameProperty());
         txtAge.textProperty().bindBidirectional(new SimpleIntegerProperty(fm.ageProperty().getValue()), format);
         txtSpouseName.textProperty().bindBidirectional(fm.spouseNameProperty());
@@ -161,8 +160,7 @@ public class FamilyTreeFXMLController implements Initializable {
 
     @FXML
     private void btnUpdate_Click(ActionEvent event) {
-        
-    }
-    
-}
 
+    }
+
+}
