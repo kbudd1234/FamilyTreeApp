@@ -32,6 +32,10 @@ public class FamilyMember {
         this("", 0, "single", "American", "Unknown" );
     }
     
+    public FamilyMember(String name) {
+        this.name.set(name);
+    }
+    
     public FamilyMember(String name, int age, String spouse, String nationality, String stateOfResidence) {
         this.name.set(name);
         this.age.set(age);
@@ -168,12 +172,12 @@ public class FamilyMember {
     }
     
     public String printInfo() {
-        return name + "\n" +
-                age + "\n" +
-                spouseName + "\n" +
+        return getName() + "\n" +
+                getAge() + "\n" +
+                getSpouseName() + "\n" +
                 "number of Children: " + listOfChildren.size() + "\n" +
-                nationality + "\n" +
-                stateOfResidence;
+                getNationality() + "\n" +
+                getStateOfResidence();
     }
     
     
