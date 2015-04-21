@@ -116,33 +116,16 @@ public class FamilyTreeFXMLController implements Initializable {
        
         root.getValue().getListOfChildren().forEach((fm) -> {
             root.getChildren().add(new TreeItem<FamilyMember>((FamilyMember) fm));
-        });
-        /*
-        root.getChildren().forEach((fm) -> {
-            fm.getChildren().add(new TreeItem<FamilyMember>((FamilyMember) fm));
-        });
-        */
-        /*
-        
-        for(int i = 0; i < root.getValue().getListOfChildren().size(); i++)
-        {
-            root.getChildren().add(new TreeItem(root.getValue().getListOfChildren().get(i)));
-        }   
             
-        */
+        });
         
-        /*
-        root.getChildren().addAll(lynnTree, jodyTree, jeanineTree, christineTree);
-        root.setExpanded(false);
-
-        lynnTree.getChildren().addAll(jenTree, chrisTree, kevinTree, kyleTree);
-        jenTree.getChildren().addAll(new TreeItem<>(ben), new TreeItem<>(madelyn));
-        kevinTree.getChildren().add(new TreeItem<>(ever));
-
-        jodyTree.getChildren().addAll(bridgetTree, erinTree, jenniferTree, kurtTree);
-
-        christineTree.getChildren().addAll(kellyTree, scottTree, kevinDawsonTree, bradleyTree);
-        */
+        try{
+        for (int i = 0; i < root.getChildren().size(); i++)
+           for (int j = 0; j < root.getChildren().get(i).getValue().getListOfChildren().size(); j++)
+            root.getChildren().get(i).getChildren().add(new TreeItem(root.getChildren().get(i).getValue().getListOfChildren().get(j)));
+        } catch(NullPointerException ex) {
+            
+        }
     }
 
     private final ChangeListener<TreeItem<FamilyMember>> treeSelectionListener
@@ -172,24 +155,13 @@ public class FamilyTreeFXMLController implements Initializable {
 
     private void familyMemberTextFieldBindings(FamilyMember fm) {
         
-        if(selectedFamilyMember.equals(root.getValue()))
-        {
-            txtName.setText(root.getValue().getName());
-            txtAge.setText(String.valueOf(root.getValue().getAge()));
-            txtSpouseName.setText(root.getValue().getSpouseName());
-            txtNumberOfChildren.setText(String.valueOf(root.getValue().getListOfChildren().size()));
-            txtNationality.setText(root.getValue().getNationality());
-            txtStateOfResidence.setText(root.getValue().getStateOfResidence());
-        }
-        else
-        {
-            txtName.textProperty().bindBidirectional(fm.nameProperty());
-            txtAge.textProperty().bindBidirectional(new SimpleIntegerProperty(fm.ageProperty().getValue()), format);
-            txtSpouseName.textProperty().bindBidirectional(fm.spouseNameProperty());
-            txtNumberOfChildren.textProperty().bindBidirectional(new SimpleIntegerProperty(fm.listOfChildrenProperty().size()), format);
-            txtNationality.textProperty().bindBidirectional(fm.nationalityProperty());
-            txtStateOfResidence.textProperty().bindBidirectional(fm.stateOfResidenceProperty());
-        }
+        txtName.textProperty().bindBidirectional(fm.nameProperty());
+        txtAge.textProperty().bindBidirectional(new SimpleIntegerProperty(fm.ageProperty().getValue()), format);
+        txtSpouseName.textProperty().bindBidirectional(fm.spouseNameProperty());
+        txtNumberOfChildren.textProperty().bindBidirectional(new SimpleIntegerProperty(fm.listOfChildrenProperty().size()), format);
+        txtNationality.textProperty().bindBidirectional(fm.nationalityProperty());
+        txtStateOfResidence.textProperty().bindBidirectional(fm.stateOfResidenceProperty());
+        
     }
 
     @FXML
