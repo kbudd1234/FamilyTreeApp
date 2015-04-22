@@ -38,10 +38,9 @@ public class FamilyTreeFXMLController implements Initializable {
     private FamilyMember erin = new FamilyMember("Erin Land", 17, "Single", "American", "Illinois");
     private FamilyMember jennifer = new FamilyMember("Jennifer Land", 15, "Single", "American", "Illinois");
     private FamilyMember kurt = new FamilyMember("Kurt Land", 12, "Single", "American", "Illinois");
-    //private FamilyMember lucy = new FamilyMember("Lucy Mara", 28, "Kevin", "American", "Illinois");
+    private FamilyMember lucy = new FamilyMember("Lucy Mara", 28, "Kevin", "American", "Illinois");
     private FamilyMember ever = new FamilyMember("Ever Budd", 1, "Single", "American", "Illinois");
-    //private FamilyMember mike = new FamilyMember("Mike Budd", 56, "Lynn", "American", "Illinois");
-
+    private FamilyMember mike = new FamilyMember("Mike Budd", 56, "Lynn", "American", "Illinois");
     private FamilyMember jen = new FamilyMember("Jennifer Bredberg", 34, "Jim", "American", "Illinois");
     private FamilyMember chris = new FamilyMember("Chris Budd", 33, "Kate", "American", "Illinois");
     private FamilyMember kyle = new FamilyMember("Kyle Budd", 30, "Single", "American", "Illinois");
@@ -50,24 +49,8 @@ public class FamilyTreeFXMLController implements Initializable {
 
     private TreeItem<FamilyMember> root;
 
-    private TreeItem<FamilyMember> jenTree = new TreeItem<>(jen);
-    private TreeItem<FamilyMember> chrisTree = new TreeItem<>(chris);
-    private TreeItem<FamilyMember> kevinTree = new TreeItem<>(kevin);
-    private TreeItem<FamilyMember> kyleTree = new TreeItem<>(kyle);
-    private TreeItem<FamilyMember> lynnTree = new TreeItem<>(lynn);
-    private TreeItem<FamilyMember> jodyTree = new TreeItem<>(jody);
-    private TreeItem<FamilyMember> jeanineTree = new TreeItem<>(jeanine);
-    private TreeItem<FamilyMember> christineTree = new TreeItem<>(christine);
-    private TreeItem<FamilyMember> kellyTree = new TreeItem<>(kelly);
-    private TreeItem<FamilyMember> scottTree = new TreeItem<>(scott);
-    private TreeItem<FamilyMember> kevinDawsonTree = new TreeItem<>(kevinDawson);
-    private TreeItem<FamilyMember> bradleyTree = new TreeItem<>(bradley);
-    private TreeItem<FamilyMember> bridgetTree = new TreeItem<>(bridget);
-    private TreeItem<FamilyMember> erinTree = new TreeItem<>(erin);
-    private TreeItem<FamilyMember> jenniferTree = new TreeItem<>(jennifer);
-    private TreeItem<FamilyMember> kurtTree = new TreeItem<>(kurt);
-
     private FamilyMember selectedFamilyMember = null;
+    
     private NumberFormat format = NumberFormat.getInstance();
 
     @FXML
@@ -90,7 +73,17 @@ public class FamilyTreeFXMLController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
-        populateFamilyTree();
+        kevin.getListOfChildren().add(ever);
+        jen.getListOfChildren().addAll(ben, madelyn);
+        lynn.getListOfChildren().addAll(jen, chris, kevin, kyle);
+        jody.getListOfChildren().addAll(bridget, erin, jennifer, kurt);
+        christine.getListOfChildren().addAll(kelly, scott, kevinDawson, bradley);
+        gerry.getListOfChildren().addAll(lynn, jody, jeanine, christine);
+        
+        //populateFamilyTree();
+        root = new TreeItem<>(gerry);
+        
+        recursiveFamilyTreeGenerator(gerry);
 
         treeView.setRoot(root);
 
@@ -101,7 +94,19 @@ public class FamilyTreeFXMLController implements Initializable {
         treeView.setCellFactory((TreeView<FamilyMember> fm) -> new FamilyMemberCellFactory());
 
     }
-
+    
+    public void recursiveFamilyTreeGenerator(FamilyMember member){
+        
+        TreeItem<FamilyMember> rootFM = new TreeItem<>(member);
+        
+        rootFM.getValue().getListOfChildren().stream().forEach((fm) -> {
+            root.getChildren().add(new TreeItem<>((FamilyMember) fm));
+            recursiveFamilyTreeGenerator((FamilyMember)fm);
+        });
+        
+    }
+    
+    /*
     public void populateFamilyTree() {
 
         kevin.getListOfChildren().add(ever);
@@ -111,31 +116,31 @@ public class FamilyTreeFXMLController implements Initializable {
         christine.getListOfChildren().addAll(kelly, scott, kevinDawson, bradley);
         gerry.getListOfChildren().addAll(lynn, jody, jeanine, christine);
         
-        
         root = new TreeItem(gerry);
        
-        root.getValue().getListOfChildren().forEach((fm) -> {
-            root.getChildren().add(new TreeItem<FamilyMember>((FamilyMember) fm));
-            
+        root.getValue().getListOfChildren().stream().forEach((fm) -> {
+            root.getChildren().add(new TreeItem<>((FamilyMember) fm));
         });
         
         try{
         for (int i = 0; i < root.getChildren().size(); i++)
+        {
            for (int j = 0; j < root.getChildren().get(i).getValue().getListOfChildren().size(); j++)
+           {
             root.getChildren().get(i).getChildren().add(new TreeItem(root.getChildren().get(i).getValue().getListOfChildren().get(j)));
+            
+           }
+        }
         } catch(NullPointerException ex) {
             
         }
     }
-
+    */
+    
+    
     private final ChangeListener<TreeItem<FamilyMember>> treeSelectionListener
             = (ov, oldValue, newValue) -> {
                 TreeItem<FamilyMember> treeItem = newValue;
-
-                if (treeItem == null || treeItem.equals(treeView.getRoot())) {
-                    clearTextFields();
-                    return;
-                }
 
                 selectedFamilyMember = new FamilyMember(treeItem.getValue());
                 
@@ -150,7 +155,6 @@ public class FamilyTreeFXMLController implements Initializable {
         txtNumberOfChildren.setText("");
         txtNationality.setText("");
         txtStateOfResidence.setText("");
-
     }
 
     private void familyMemberTextFieldBindings(FamilyMember fm) {
@@ -161,7 +165,6 @@ public class FamilyTreeFXMLController implements Initializable {
         txtNumberOfChildren.textProperty().bindBidirectional(new SimpleIntegerProperty(fm.listOfChildrenProperty().size()), format);
         txtNationality.textProperty().bindBidirectional(fm.nationalityProperty());
         txtStateOfResidence.textProperty().bindBidirectional(fm.stateOfResidenceProperty());
-        
     }
 
     @FXML
