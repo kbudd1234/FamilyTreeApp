@@ -99,53 +99,21 @@ public class FamilyTreeFXMLController implements Initializable {
     
     public void familyTreeGenerator(FamilyMember member){
         
-        if(root == null)
-        {
+        if(member == gerry)
             root = new TreeItem<>(member);
+        
+        if(member.getListOfChildren().size() != 0)
+        {
+            if(member != gerry)
+                branch = new TreeItem<>(member);
+            
+            member.getListOfChildren().forEach((fm) -> { familyTreeGenerator((FamilyMember) fm);});
+            root.getChildren().add(branch);
         }
         else
-        {
-            if(member.getListOfChildren().size() != 0)
-            {
-                branch = new TreeItem<>((FamilyMember) member);
-                member.getListOfChildren().forEach((fm) -> {
-                    familyTreeGenerator((FamilyMember) fm);
-
-                });
-            }
-            else
-            {
-                branch.getValue().getListOfChildren().forEach((fm) -> {
-                    leaf = new TreeItem<>((FamilyMember) fm);
-                    branch.getChildren().add(leaf);
-                });
-            }
-        root.getChildren().add(branch);
-        }
+            branch.getChildren().add(new TreeItem<>((FamilyMember) member));
         
     }
-    
-    /*
-    public void populateFamilyTree() {
-
-        root.getValue().getListOfChildren().stream().forEach((fm) -> {
-            root.getChildren().add(new TreeItem<>((FamilyMember) fm));
-        });
-        
-        try{
-        for (int i = 0; i < root.getChildren().size(); i++)
-        {
-           for (int j = 0; j < root.getChildren().get(i).getValue().getListOfChildren().size(); j++)
-           {
-            root.getChildren().get(i).getChildren().add(new TreeItem(root.getChildren().get(i).getValue().getListOfChildren().get(j)));
-            
-           }
-        }
-        } catch(NullPointerException ex) {
-            
-        }
-    }
-    */
     
     
     private final ChangeListener<TreeItem<FamilyMember>> treeSelectionListener
