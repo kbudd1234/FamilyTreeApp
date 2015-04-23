@@ -6,7 +6,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="423.0" prefWidth="579.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="familytree.FamilyTreeFXMLController">
+<AnchorPane id="AnchorPane" prefHeight="578.0" prefWidth="579.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="familytree.FamilyTreeFXMLController">
    <children>
       <TextField fx:id="txtName" layoutX="30.0" layoutY="57.0" prefHeight="26.0" prefWidth="120.0" />
       <TextField fx:id="txtAge" layoutX="181.0" layoutY="57.0" prefHeight="26.0" prefWidth="62.0" />
@@ -14,8 +14,8 @@
       <TextField fx:id="txtNumberOfChildren" layoutX="181.0" layoutY="102.0" prefHeight="26.0" prefWidth="62.0" />
       <TextField fx:id="txtNationality" layoutX="30.0" layoutY="150.0" prefHeight="26.0" prefWidth="120.0" />
       <TextField fx:id="txtStateOfResidence" layoutX="181.0" layoutY="150.0" prefHeight="26.0" prefWidth="62.0" />
-      <TreeView fx:id="treeView" layoutX="275.0" layoutY="25.0" prefHeight="311.0" prefWidth="304.0" />
-      <MenuBar prefHeight="29.0" prefWidth="579.0">
+      <TreeView fx:id="treeView" layoutX="268.0" layoutY="41.0" prefHeight="496.0" prefWidth="304.0" />
+      <MenuBar layoutY="3.0" prefHeight="26.0" prefWidth="579.0">
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>

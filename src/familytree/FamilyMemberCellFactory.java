@@ -22,13 +22,10 @@ public class FamilyMemberCellFactory extends TreeCell<FamilyMember> {
     
     public FamilyMemberCellFactory (){
         
-        
     }
     
     @Override
     public void updateItem(FamilyMember item, boolean empty) {
-        
-        
         super.updateItem(item, empty);
         
         if (empty) {

@@ -47,7 +47,7 @@ public class FamilyTreeFXMLController implements Initializable {
     private FamilyMember ben = new FamilyMember("Ben Bredberg", 4, "Single", "American", "Illinois");
     private FamilyMember madelyn = new FamilyMember("Madelyn Bredberg", 2, "Single", "American", "Illinois");
 
-    private TreeItem<FamilyMember> root;
+    private TreeItem<FamilyMember> root = null;
 
     private FamilyMember selectedFamilyMember = null;
     
@@ -69,6 +69,9 @@ public class FamilyTreeFXMLController implements Initializable {
     private TreeView<FamilyMember> treeView;
     @FXML
     private Button btnUpdate;
+    
+    private TreeItem<FamilyMember> branch;
+    private TreeItem<FamilyMember> leaf;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -80,10 +83,9 @@ public class FamilyTreeFXMLController implements Initializable {
         christine.getListOfChildren().addAll(kelly, scott, kevinDawson, bradley);
         gerry.getListOfChildren().addAll(lynn, jody, jeanine, christine);
         
-        //populateFamilyTree();
         root = new TreeItem<>(gerry);
         
-        recursiveFamilyTreeGenerator(gerry);
+        familyTreeGenerator(gerry);
 
         treeView.setRoot(root);
 
@@ -95,29 +97,33 @@ public class FamilyTreeFXMLController implements Initializable {
 
     }
     
-    public void recursiveFamilyTreeGenerator(FamilyMember member){
+    public void familyTreeGenerator(FamilyMember member){
         
-        TreeItem<FamilyMember> rootFM = new TreeItem<>(member);
-        
-        rootFM.getValue().getListOfChildren().stream().forEach((fm) -> {
-            root.getChildren().add(new TreeItem<>((FamilyMember) fm));
-            recursiveFamilyTreeGenerator((FamilyMember)fm);
-        });
+        if(member.getListOfChildren().size() != 0)
+        {
+            member.getListOfChildren().forEach((fm) -> {
+                
+                if(((FamilyMember) fm).getListOfChildren().size() != 0)
+                {
+                    branch = new TreeItem<>((FamilyMember) fm);
+                    familyTreeGenerator((FamilyMember) fm);
+                    //leaf = new TreeItem<>((FamilyMember) fm);
+                }  
+                else
+                {
+                    leaf = new TreeItem<>((FamilyMember) fm);
+                    branch.getChildren().add(leaf);
+                }
+                
+            });
+            root.getChildren().add(branch);
+        }
         
     }
     
     /*
     public void populateFamilyTree() {
 
-        kevin.getListOfChildren().add(ever);
-        jen.getListOfChildren().addAll(ben, madelyn);
-        lynn.getListOfChildren().addAll(jen, chris, kevin, kyle);
-        jody.getListOfChildren().addAll(bridget, erin, jennifer, kurt);
-        christine.getListOfChildren().addAll(kelly, scott, kevinDawson, bradley);
-        gerry.getListOfChildren().addAll(lynn, jody, jeanine, christine);
-        
-        root = new TreeItem(gerry);
-       
         root.getValue().getListOfChildren().stream().forEach((fm) -> {
             root.getChildren().add(new TreeItem<>((FamilyMember) fm));
         });
