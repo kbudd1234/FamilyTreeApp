@@ -99,24 +99,28 @@ public class FamilyTreeFXMLController implements Initializable {
     
     public void familyTreeGenerator(FamilyMember member){
         
-        if(member.getListOfChildren().size() != 0)
+        if(root == null)
         {
-            member.getListOfChildren().forEach((fm) -> {
-                
-                if(((FamilyMember) fm).getListOfChildren().size() != 0)
-                {
-                    branch = new TreeItem<>((FamilyMember) fm);
+            root = new TreeItem<>(member);
+        }
+        else
+        {
+            if(member.getListOfChildren().size() != 0)
+            {
+                branch = new TreeItem<>((FamilyMember) member);
+                member.getListOfChildren().forEach((fm) -> {
                     familyTreeGenerator((FamilyMember) fm);
-                    //leaf = new TreeItem<>((FamilyMember) fm);
-                }  
-                else
-                {
+
+                });
+            }
+            else
+            {
+                branch.getValue().getListOfChildren().forEach((fm) -> {
                     leaf = new TreeItem<>((FamilyMember) fm);
                     branch.getChildren().add(leaf);
-                }
-                
-            });
-            root.getChildren().add(branch);
+                });
+            }
+        root.getChildren().add(branch);
         }
         
     }
