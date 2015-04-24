@@ -88,10 +88,6 @@ public class FamilyMember {
         return spouseName;
     }
     
-    public FamilyMember[] getAllChildren() {
-        return (FamilyMember[]) listOfChildren.toArray();
-    }
-    
     public ObservableList getListOfChildren() {
         return listOfChildren.get();
     }
