@@ -5,9 +5,14 @@
  */
 package familytree;
 
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.scene.Node;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.TreeCell;
+import javafx.scene.control.TreeItem;
 import javafx.scene.image.ImageView;
 
 /**
@@ -19,8 +24,11 @@ public class FamilyMemberCellFactory extends TreeCell<FamilyMember> {
     Node leafIcon = new ImageView("familytree/leaf.png");
     Node branchIcon = new ImageView("familytree/branch.png");
     private Tooltip tooltip = new Tooltip();
+    private ContextMenu addMenu = new ContextMenu();
     
     public FamilyMemberCellFactory (){
+        
+        
         
     }
     

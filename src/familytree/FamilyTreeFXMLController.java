@@ -5,11 +5,14 @@
  */
 package familytree;
 
+import java.io.File;
 import java.net.URL;
 import java.text.NumberFormat;
 import java.util.ResourceBundle;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -72,6 +75,8 @@ public class FamilyTreeFXMLController implements Initializable {
     
     private TreeItem<FamilyMember> branch;
     private TreeItem<FamilyMember> leaf;
+    @FXML
+    private Button btnAddMember;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -83,10 +88,10 @@ public class FamilyTreeFXMLController implements Initializable {
         christine.getListOfChildren().addAll(kelly, scott, kevinDawson, bradley);
         gerry.getListOfChildren().addAll(lynn, jody, jeanine, christine);
         
-        root = new TreeItem<>(gerry);
-        
-        familyTreeGenerator(gerry);
+        //familyTreeGenerator(gerry);
 
+        root = createNode(gerry);
+        
         treeView.setRoot(root);
 
         treeView.getSelectionModel().selectedItemProperty().addListener(treeSelectionListener);
@@ -97,24 +102,56 @@ public class FamilyTreeFXMLController implements Initializable {
 
     }
     
+    public TreeItem<FamilyMember> familyTreeGenerator(FamilyMember member){
+        
+        if(member == gerry)
+            root = new TreeItem<>(member);
+        
+        
+        if(member.getListOfChildren().size() !=0)
+        { 
+            for (Object listOfChildren : member.getListOfChildren()) 
+            {
+                branch = new TreeItem<>(member);
+                
+                familyTreeGenerator((FamilyMember) listOfChildren);
+                
+                root.getChildren().add(new TreeItem<>((FamilyMember) listOfChildren));
+            }
+        }
+        
+        branch.getChildren().add(new TreeItem<>((FamilyMember) member));
+        
+        return root;
+    }
+    
+    
+    /*
     public void familyTreeGenerator(FamilyMember member){
         
         if(member == gerry)
             root = new TreeItem<>(member);
         
+        try{
         if(member.getListOfChildren().size() != 0)
         {
-            if(member != gerry)
-                branch = new TreeItem<>(member);
-            
-            member.getListOfChildren().forEach((fm) -> { familyTreeGenerator((FamilyMember) fm);});
+            branch = new TreeItem<>(member);
             root.getChildren().add(branch);
+            for (Object listOfChildren : member.getListOfChildren()) 
+            {
+                //member.getListOfChildren().forEach((fm) -> { familyTreeGenerator((FamilyMember) fm);});
+                familyTreeGenerator((FamilyMember) listOfChildren);
+            }
+            branch.getParent().getChildren().add(branch);
+            
         }
         else
             branch.getChildren().add(new TreeItem<>((FamilyMember) member));
-        
+        } catch (NullPointerException ex) {
+            
+        }        
     }
-    
+    */
     
     private final ChangeListener<TreeItem<FamilyMember>> treeSelectionListener
             = (ov, oldValue, newValue) -> {
@@ -123,6 +160,8 @@ public class FamilyTreeFXMLController implements Initializable {
                 selectedFamilyMember = new FamilyMember(treeItem.getValue());
                 
                 familyMemberTextFieldBindings(selectedFamilyMember);
+                
+                
 
             };
 
@@ -148,6 +187,62 @@ public class FamilyTreeFXMLController implements Initializable {
     @FXML
     private void btnUpdate_Click(ActionEvent event) {
 
+        
     }
 
+    @FXML
+    private void btnAddMember_Clicked(ActionEvent event) {
+        
+        //selectedFamilyMember.getListOfChildren().add(new FamilyMember("New Member"));
+        //treeItem.getValue().getListOfChildren().add(new FamilyMember("New Member"));
+        
+    }
+    
+     private TreeItem<FamilyMember> createNode(final FamilyMember fm) {
+    return new TreeItem<FamilyMember>(fm) {
+        private boolean isLeaf;
+        private boolean isFirstTimeChildren = true;
+        private boolean isFirstTimeLeaf = true;
+         
+        @Override 
+        public ObservableList<TreeItem<FamilyMember>> getChildren() {
+            if (isFirstTimeChildren) {
+                isFirstTimeChildren = false;
+                super.getChildren().setAll(buildChildren(this));
+            }
+            return super.getChildren();
+        }
+
+        @Override 
+        public boolean isLeaf() {
+            if (isFirstTimeLeaf) {
+                isFirstTimeLeaf = false;
+                FamilyMember fm = (FamilyMember) getValue();
+                isLeaf = (fm.getListOfChildren().size() == 0);
+            }
+
+            return isLeaf;
+        }
+
+        private ObservableList<TreeItem<FamilyMember>> buildChildren(TreeItem<FamilyMember> TreeItem) {
+            FamilyMember fm = TreeItem.getValue();
+            if (fm != null && (fm.getListOfChildren().size() != 0)) {
+                FamilyMember[] familyMembers = fm.getAllChildren();
+                if (familyMembers != null) {
+                    ObservableList<TreeItem<FamilyMember>> children = FXCollections.observableArrayList();
+
+                    for (FamilyMember childrenMembers : familyMembers) {
+                        children.add(createNode(childrenMembers));
+                    }
+
+                    return children;
+                }
+            }
+
+            return FXCollections.emptyObservableList();
+        }
+    };
+}
+
+    
 }
