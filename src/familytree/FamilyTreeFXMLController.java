@@ -10,6 +10,7 @@ import java.net.URL;
 import java.text.NumberFormat;
 import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
+import javafx.beans.property.Property;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
@@ -31,7 +32,8 @@ import javax.xml.bind.Unmarshaller;
  * @author kevinbudd
  */
 public class FamilyTreeFXMLController implements Initializable {
-
+    
+    
     private FamilyMember gerry = new FamilyMember("Gerry DeGraff", 83, "Richard", "American", "Illinois");
     private FamilyMember lynn = new FamilyMember("Lynn Budd", 56, "Mike", "American", "Illinois");
     private FamilyMember jody = new FamilyMember("Jody Land", 54, "Jay", "American", "Illinois");
@@ -54,10 +56,12 @@ public class FamilyTreeFXMLController implements Initializable {
     private FamilyMember kyle = new FamilyMember("Kyle Budd", 30, "Single", "American", "Illinois");
     private FamilyMember ben = new FamilyMember("Ben Bredberg", 4, "Single", "American", "Illinois");
     private FamilyMember madelyn = new FamilyMember("Madelyn Bredberg", 2, "Single", "American", "Illinois");
-
+    private FamilyMember blankRoot = new FamilyMember("Family Tree");
+    
     private TreeItem<FamilyMember> root = null;
 
     private FamilyMember selectedFamilyMember = null;
+    private FamilyMember rootFamilyMember = null;
     
     private NumberFormat format = NumberFormat.getInstance();
 
@@ -94,16 +98,18 @@ public class FamilyTreeFXMLController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         
-        /*
+        
         kevin.getListOfChildren().add(ever);
         jen.getListOfChildren().addAll(ben, madelyn);
         lynn.getListOfChildren().addAll(jen, chris, kevin, kyle);
         jody.getListOfChildren().addAll(bridget, erin, jennifer, kurt);
         christine.getListOfChildren().addAll(kelly, scott, kevinDawson, bradley);
         gerry.getListOfChildren().addAll(lynn, jody, jeanine, christine);
-        */
         
-        root = new TreeItem<>(handleOpen());
+        
+        //root = new TreeItem<>(handleOpen());
+        
+        root = new TreeItem<>(blankRoot);
         
         familyTreeGenerator(root);
 
@@ -114,7 +120,8 @@ public class FamilyTreeFXMLController implements Initializable {
         treeView.setEditable(true);
 
         treeView.setCellFactory((TreeView<FamilyMember> fm) -> new FamilyMemberCellFactory());
-
+        
+        
     }
     
     
@@ -170,7 +177,11 @@ public class FamilyTreeFXMLController implements Initializable {
 
     @FXML
     private void btnAddMember_Clicked(ActionEvent event) {
-        //selectedFamilyMember.getListOfChildren().add(new FamilyMember("New Member"));
+        selectedFamilyMember.getListOfChildren().add(new FamilyMember("New Member"));
+        
+        familyTreeGenerator(root);
+
+        treeView.setRoot(root);
         //treeItem.getValue().getListOfChildren().add(new FamilyMember("New Member"));
     }
     
@@ -230,7 +241,13 @@ public class FamilyTreeFXMLController implements Initializable {
             
             FamilyMemberWrapper LoadWrapper = (FamilyMemberWrapper) um.unmarshal(file);
 
-            gerry = new FamilyMember(LoadWrapper.getFamilyTreeRoot());
+            rootFamilyMember = new FamilyMember(LoadWrapper.getFamilyTreeRoot());
+            
+            root = new TreeItem<>(rootFamilyMember);
+            
+            familyTreeGenerator(root);
+
+            treeView.setRoot(root);
             
             setFamilyTreeRootFilePath(file);
             
