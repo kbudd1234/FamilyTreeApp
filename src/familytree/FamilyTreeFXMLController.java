@@ -6,10 +6,6 @@
 package familytree;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.URL;
 import java.text.NumberFormat;
 import java.util.ResourceBundle;
@@ -301,6 +297,4 @@ public class FamilyTreeFXMLController implements Initializable {
         System.exit(0);
     }
 
-    
-    
 }
