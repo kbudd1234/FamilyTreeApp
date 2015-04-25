@@ -6,20 +6,26 @@
 package familytree;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.URL;
 import java.text.NumberFormat;
 import java.util.ResourceBundle;
+import java.util.prefs.Preferences;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
 /**
  *
@@ -77,16 +83,26 @@ public class FamilyTreeFXMLController implements Initializable {
     private TreeItem<FamilyMember> leaf;
     @FXML
     private Button btnAddMember;
+    @FXML
+    private MenuItem mnuSave;
+    @FXML
+    private MenuItem mnuSaveAs;
+    @FXML
+    private MenuItem btnExit;
+    @FXML
+    private MenuItem mnuOpen;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
+        
+        
         kevin.getListOfChildren().add(ever);
         jen.getListOfChildren().addAll(ben, madelyn);
         lynn.getListOfChildren().addAll(jen, chris, kevin, kyle);
         jody.getListOfChildren().addAll(bridget, erin, jennifer, kurt);
         christine.getListOfChildren().addAll(kelly, scott, kevinDawson, bradley);
         gerry.getListOfChildren().addAll(lynn, jody, jeanine, christine);
+        
         
         root = new TreeItem<>(gerry);
         
@@ -99,8 +115,11 @@ public class FamilyTreeFXMLController implements Initializable {
         treeView.setEditable(true);
 
         treeView.setCellFactory((TreeView<FamilyMember> fm) -> new FamilyMemberCellFactory());
+        
+        System.out.println(gerry.getListOfChildren().toString());
 
     }
+    
     
     public void familyTreeGenerator(TreeItem<FamilyMember> member){
         
@@ -108,7 +127,7 @@ public class FamilyTreeFXMLController implements Initializable {
         { 
             for (Object listOfChildren : member.getValue().getListOfChildren()) 
             {
-                TreeItem<FamilyMember> temp = new TreeItem<FamilyMember>((FamilyMember) listOfChildren);
+                TreeItem<FamilyMember> temp = new TreeItem<>((FamilyMember) listOfChildren);
                 
                 member.getChildren().add(temp);
                 
@@ -117,34 +136,6 @@ public class FamilyTreeFXMLController implements Initializable {
         }
         
     }
-    
-    
-    /*
-    public void familyTreeGenerator(FamilyMember member){
-        
-        if(member == gerry)
-            root = new TreeItem<>(member);
-        
-        try{
-        if(member.getListOfChildren().size() != 0)
-        {
-            branch = new TreeItem<>(member);
-            root.getChildren().add(branch);
-            for (Object listOfChildren : member.getListOfChildren()) 
-            {
-                //member.getListOfChildren().forEach((fm) -> { familyTreeGenerator((FamilyMember) fm);});
-                familyTreeGenerator((FamilyMember) listOfChildren);
-            }
-            branch.getParent().getChildren().add(branch);
-            
-        }
-        else
-            branch.getChildren().add(new TreeItem<>((FamilyMember) member));
-        } catch (NullPointerException ex) {
-            
-        }        
-    }
-    */
     
     private final ChangeListener<TreeItem<FamilyMember>> treeSelectionListener
             = (ov, oldValue, newValue) -> {
@@ -178,16 +169,117 @@ public class FamilyTreeFXMLController implements Initializable {
     @FXML
     private void btnUpdate_Click(ActionEvent event) {
 
-        
     }
 
     @FXML
     private void btnAddMember_Clicked(ActionEvent event) {
-        
         //selectedFamilyMember.getListOfChildren().add(new FamilyMember("New Member"));
         //treeItem.getValue().getListOfChildren().add(new FamilyMember("New Member"));
+    }
+    
+    //
+    //######################################################################################
+    //   Saving to and retrieving from a file Section
+    //
+    //  return the file path of the saved data if one is saved
+    public File getFamilyTreeRootFilePath() {
+        Preferences prefs = Preferences.userNodeForPackage(FamilyTreeFXMLController.class);
+        String filePath = prefs.get("filePath", null);
+        
+        if (filePath != null) {
+            return new File(filePath);
+        } else {
+            return null;
+        }
+       
+    }
+
+    //save the file path of the saved data
+    public void setFamilyTreeRootFilePath(File file) {
+        Preferences prefs = Preferences.userNodeForPackage(FamilyTreeFXMLController.class);
+        if (file != null) {
+            prefs.put("filePath", file.getPath());
+
+        } else {
+            prefs.remove("filePath");
+
+        }
+    }
+    
+    public void saveFamilyTreeRootToFile(File file) {
+        try{
+            FileOutputStream fileOut = new FileOutputStream(file);
+            ObjectOutputStream output = new ObjectOutputStream(fileOut);
+            output.writeObject(gerry);
+            output.close();
+        }
+         catch (Exception ex){
+            
+        }
+    }
+    
+   
+    @FXML
+    private FamilyMember handleOpen() {
+        FileChooser fileChooser = new FileChooser();
+
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(
+                "ROOT files (*.root)", "*.root");
+        fileChooser.getExtensionFilters().add(extFilter);
+
+        File file = fileChooser.showOpenDialog(new Stage());
+        
+        try{
+        FileInputStream fileIn = new FileInputStream(file);
+        ObjectInputStream input = new ObjectInputStream(fileIn);
+        
+        gerry = (FamilyMember) input.readObject();
+        
+        
+        } catch (Exception ex){
+            
+        }
+        
+        
+        return gerry;
         
     }
+    
+    
+    @FXML
+    private void handleSave() {
+        File portfolioFile = getFamilyTreeRootFilePath();
+        if (portfolioFile != null) {
+            saveFamilyTreeRootToFile(portfolioFile);
+        } else {
+            handleSaveAs();
+        }
+    }
+
+    @FXML
+    private void handleSaveAs() {
+        FileChooser fileChooser = new FileChooser();
+
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(
+                "ROOT files (*.root)", "*.root");
+        fileChooser.getExtensionFilters().add(extFilter);
+
+        File file = fileChooser.showSaveDialog(new Stage());
+
+        if (file != null) {
+            if (!file.getPath().endsWith(".root")) {
+                file = new File(file.getPath() + ".root");
+            }
+            saveFamilyTreeRootToFile(file);
+        }
+        
+    }
+
+    @FXML
+    private void handleExit() {
+        System.exit(0);
+    }
+
     
     
 }

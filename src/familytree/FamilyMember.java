@@ -5,6 +5,7 @@
  */
 package familytree;
 
+import java.io.Serializable;
 import java.util.Objects;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ListProperty;
@@ -14,12 +15,15 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlElement;
 
 /**
  *
  * @author kevinbudd
  */
-public class FamilyMember {
+@XmlRootElement
+public class FamilyMember implements Serializable {
     private final StringProperty name = new SimpleStringProperty(this, "name", "");
     private final IntegerProperty age = new SimpleIntegerProperty(this, "age", 0);
     private final StringProperty spouseName = new SimpleStringProperty(this, "spouseName", "");
@@ -56,7 +60,7 @@ public class FamilyMember {
     public String getName() {
         return name.get();
     }
-
+    @XmlElement
     public void setName(String value) {
         name.set(value);
     }
@@ -68,7 +72,7 @@ public class FamilyMember {
     public int getAge() {
         return age.get();
     }
-
+    @XmlElement
     public void setAge(int value) {
         age.set(value);
     }
@@ -79,7 +83,7 @@ public class FamilyMember {
     public String getSpouseName() {
         return spouseName.get();
     }
-
+    @XmlElement
     public void setSpouseName(String value) {
         spouseName.set(value);
     }
@@ -91,7 +95,7 @@ public class FamilyMember {
     public ObservableList getListOfChildren() {
         return listOfChildren.get();
     }
-
+    @XmlElement
     public void setListOfChildren(ObservableList value) {
         listOfChildren.set(value);
     }
@@ -103,7 +107,7 @@ public class FamilyMember {
     public String getNationality() {
         return nationality.get();
     }
-
+    @XmlElement
     public void setNationality(String value) {
         nationality.set(value);
     }
@@ -115,7 +119,7 @@ public class FamilyMember {
     public String getStateOfResidence() {
         return stateOfResidence.get();
     }
-
+    @XmlElement
     public void setStateOfResidence(String value) {
         stateOfResidence.set(value);
     }
