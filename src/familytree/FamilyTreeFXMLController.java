@@ -26,6 +26,9 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 
 /**
  *
@@ -95,16 +98,16 @@ public class FamilyTreeFXMLController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         
-        
+        /*
         kevin.getListOfChildren().add(ever);
         jen.getListOfChildren().addAll(ben, madelyn);
         lynn.getListOfChildren().addAll(jen, chris, kevin, kyle);
         jody.getListOfChildren().addAll(bridget, erin, jennifer, kurt);
         christine.getListOfChildren().addAll(kelly, scott, kevinDawson, bradley);
         gerry.getListOfChildren().addAll(lynn, jody, jeanine, christine);
+        */
         
-        
-        root = new TreeItem<>(gerry);
+        root = new TreeItem<>(handleOpen());
         
         familyTreeGenerator(root);
 
@@ -115,8 +118,6 @@ public class FamilyTreeFXMLController implements Initializable {
         treeView.setEditable(true);
 
         treeView.setCellFactory((TreeView<FamilyMember> fm) -> new FamilyMemberCellFactory());
-        
-        System.out.println(gerry.getListOfChildren().toString());
 
     }
     
@@ -208,17 +209,41 @@ public class FamilyTreeFXMLController implements Initializable {
     
     public void saveFamilyTreeRootToFile(File file) {
         try{
-            FileOutputStream fileOut = new FileOutputStream(file);
-            ObjectOutputStream output = new ObjectOutputStream(fileOut);
-            output.writeObject(gerry);
-            output.close();
+            JAXBContext context = JAXBContext.newInstance(FamilyMemberWrapper.class);
+            Marshaller m = context.createMarshaller();
+            m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+
+            FamilyMemberWrapper saveWrapper = new FamilyMemberWrapper();
+            saveWrapper.setFamilyTreeRoot(gerry);
+
+            m.marshal(saveWrapper, file);
+
+            setFamilyTreeRootFilePath(file);
+            
         }
          catch (Exception ex){
             
         }
     }
     
-   
+    public void loadFamilyTreeRootFromFile(File file) {
+        
+        try {
+            JAXBContext context = JAXBContext.newInstance(FamilyMemberWrapper.class);
+            Unmarshaller um = context.createUnmarshaller();
+            
+            FamilyMemberWrapper LoadWrapper = (FamilyMemberWrapper) um.unmarshal(file);
+
+            gerry = new FamilyMember(LoadWrapper.getFamilyTreeRoot());
+            
+            setFamilyTreeRootFilePath(file);
+            
+        } catch (Exception ex) { 
+
+        }
+        
+    }
+        
     @FXML
     private FamilyMember handleOpen() {
         FileChooser fileChooser = new FileChooser();
@@ -230,11 +255,8 @@ public class FamilyTreeFXMLController implements Initializable {
         File file = fileChooser.showOpenDialog(new Stage());
         
         try{
-        FileInputStream fileIn = new FileInputStream(file);
-        ObjectInputStream input = new ObjectInputStream(fileIn);
-        
-        gerry = (FamilyMember) input.readObject();
-        
+            
+        loadFamilyTreeRootFromFile(file);
         
         } catch (Exception ex){
             
@@ -272,7 +294,6 @@ public class FamilyTreeFXMLController implements Initializable {
             }
             saveFamilyTreeRootToFile(file);
         }
-        
     }
 
     @FXML

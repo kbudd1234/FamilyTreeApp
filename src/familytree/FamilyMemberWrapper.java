@@ -5,7 +5,6 @@
  */
 package familytree;
 
-import javafx.scene.control.TreeItem;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -13,14 +12,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "familyMembers")
 public class FamilyMemberWrapper {
 
-    private TreeItem<FamilyMember> familyTreeRoot;
+    private FamilyMember familyTreeRoot;
 
     @XmlElement(name = "Member")
-    public TreeItem<FamilyMember> getFamilyTreeRoot() {
+    public FamilyMember getFamilyTreeRoot() {
         return familyTreeRoot;
     }
 
-    public void setFamilyTreeRoot(TreeItem<FamilyMember> familyTreeRoot) {
+    public void setFamilyTreeRoot(FamilyMember familyTreeRoot) {
         this.familyTreeRoot = familyTreeRoot;
     }
 }
