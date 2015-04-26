@@ -5,7 +5,6 @@
  */
 package familytree;
 
-import java.io.Serializable;
 import java.util.Objects;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ListProperty;
@@ -23,7 +22,7 @@ import javax.xml.bind.annotation.XmlElement;
  * @author kevinbudd
  */
 @XmlRootElement
-public class FamilyMember implements Serializable {
+public class FamilyMember {
     private final StringProperty name = new SimpleStringProperty(this, "name", "");
     private final IntegerProperty age = new SimpleIntegerProperty(this, "age", 0);
     private final StringProperty spouseName = new SimpleStringProperty(this, "spouseName", "");
@@ -33,7 +32,8 @@ public class FamilyMember implements Serializable {
 
     
     public FamilyMember() {
-        this("", 0, "single", "American", "Unknown" );
+        //this("", 0, "single", "American", "Unknown" );
+        this("Family Tree");
     }
     
     public FamilyMember(String name) {

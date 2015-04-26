@@ -5,7 +5,6 @@
  */
 package familytree;
 
-import java.awt.Rectangle;
 import java.io.File;
 import java.net.URL;
 import java.text.NumberFormat;
@@ -16,12 +15,9 @@ import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Tooltip;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.stage.FileChooser;
@@ -109,15 +105,14 @@ public class FamilyTreeFXMLController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        
-        
+        /*
         kevin.getListOfChildren().add(ever);
         jen.getListOfChildren().addAll(ben, madelyn);
         lynn.getListOfChildren().addAll(jen, chris, kevin, kyle);
         jody.getListOfChildren().addAll(bridget, erin, jennifer, kurt);
         christine.getListOfChildren().addAll(kelly, scott, kevinDawson, bradley);
         gerry.getListOfChildren().addAll(lynn, jody, jeanine, christine);
-        
+        */
         
         //root = new TreeItem<>(handleOpen());
         
@@ -164,6 +159,11 @@ public class FamilyTreeFXMLController implements Initializable {
                 familyMemberTextFieldBindings(selectedFamilyMember);
                 
             };
+    
+    private final ChangeListener<FamilyMember> familyMemberListener 
+            = (ov, oldValue, newValue) -> {
+              FamilyMember familyMemberItem = newValue;  
+            };
 
     private void clearTextFields() {
         txtName.setText("");
@@ -194,6 +194,21 @@ public class FamilyTreeFXMLController implements Initializable {
     @FXML
     private void btnUpdate_Click(ActionEvent event) {
         
+        //construct a new family member with updated attributes
+        FamilyMember updatedMember = new FamilyMember();
+        updatedMember.setName(txtName.getText());
+        updatedMember.setAge(Integer.parseInt(txtAge.getText()));
+        updatedMember.setSpouseName(txtSpouseName.getText());
+        updatedMember.setListOfChildren(selectedFamilyMember.getListOfChildren());
+        updatedMember.setNationality(txtNationality.getText());
+        updatedMember.setStateOfResidence(txtStateOfResidence.getText());
+        
+        //treeView.getSelectionModel().getSelectedItem().setValue(updatedMember);
+        treeView.getSelectionModel().getSelectedItem().setValue(updatedMember);
+        //TreeItem<FamilyMember> parent = treeView.getSelectionModel().getSelectedItem().getParent();
+        
+        selectedFamilyMember.nameProperty().bindBidirectional(txtName.textProperty());
+        //selectedFamilyMember.ageProperty().bindBidirectional(new SimpleIntegerProperty(Integer.parseInt(txtAge.textProperty())), format);
         
     }
 
@@ -208,11 +223,14 @@ public class FamilyTreeFXMLController implements Initializable {
         final FamilyMember newMember = new FamilyMember("new member");
         
         final TreeItem<FamilyMember> newNode = new TreeItem<>(newMember);
+        
         parent.getChildren().add(newNode);
         parent.getValue().getListOfChildren().add(newMember);
         parent.setExpanded(true);
         treeView.getSelectionModel().select(newNode);
         
+        System.out.println(parent.getValue().getListOfChildren());
+        System.out.println(root.getValue().getListOfChildren());
         
     }
     
@@ -253,9 +271,9 @@ public class FamilyTreeFXMLController implements Initializable {
     
     @FXML
     private void handleSave() {
-        File portfolioFile = getFamilyTreeRootFilePath();
-        if (portfolioFile != null) {
-            saveFamilyTreeRootToFile(portfolioFile);
+        File file = getFamilyTreeRootFilePath();
+        if (file != null) {
+            saveFamilyTreeRootToFile(file);
         } else {
             handleSaveAs();
         }
@@ -305,6 +323,9 @@ public class FamilyTreeFXMLController implements Initializable {
         parent.getValue().getListOfChildren().add(newMember);
         parent.setExpanded(true);
         treeView.getSelectionModel().select(newNode);
+        
+        System.out.println(parent.getValue().getListOfChildren());
+        System.out.println(root.getValue().getListOfChildren());
         
     }
 
