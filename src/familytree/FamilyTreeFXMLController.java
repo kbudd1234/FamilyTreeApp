@@ -5,20 +5,23 @@
  */
 package familytree;
 
+import java.awt.Rectangle;
 import java.io.File;
 import java.net.URL;
 import java.text.NumberFormat;
 import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
-import javafx.beans.property.Property;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.stage.FileChooser;
@@ -95,6 +98,14 @@ public class FamilyTreeFXMLController implements Initializable {
     private MenuItem btnExit;
     @FXML
     private MenuItem mnuOpen;
+    @FXML
+    private Button btnDelete;
+    @FXML
+    private MenuItem mnuInfo;
+    @FXML
+    private MenuItem mnuAddNewMember;
+    @FXML
+    private MenuItem mnuDelete;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -171,19 +182,23 @@ public class FamilyTreeFXMLController implements Initializable {
         txtNumberOfChildren.textProperty().bindBidirectional(new SimpleIntegerProperty(fm.listOfChildrenProperty().size()), format);
         txtNationality.textProperty().bindBidirectional(fm.nationalityProperty());
         txtStateOfResidence.textProperty().bindBidirectional(fm.stateOfResidenceProperty());
+        
     }
 
+    //
+    //######################################################################################
+    //
+    // Event handlers for buttons and menu Items section
+    //
+    
     @FXML
     private void btnUpdate_Click(ActionEvent event) {
         
-
+        
     }
 
     @FXML
     private void btnAddMember_Clicked(ActionEvent event) {
-        //selectedFamilyMember.getListOfChildren().add(new FamilyMember("New Member"));
-        //selectedTreeItem.getChildren().add(new TreeItem<>(new FamilyMember("New Member")));
-        //treeItem.getValue().getListOfChildren().add(new FamilyMember("New Member"));
         
         TreeItem<FamilyMember> parent = treeView.getSelectionModel().getSelectedItem();
         if (parent==null) {
@@ -198,13 +213,116 @@ public class FamilyTreeFXMLController implements Initializable {
         parent.setExpanded(true);
         treeView.getSelectionModel().select(newNode);
         
-        System.out.println(root.getValue().getListOfChildren());
         
     }
     
+    @FXML
+    private void btnDelete_Click(ActionEvent event) {
+        
+        TreeItem<FamilyMember> parent = treeView.getSelectionModel().getSelectedItem().getParent();
+        TreeItem<FamilyMember> familyMember = treeView.getSelectionModel().getSelectedItem();
+        familyMember.getParent().getChildren().remove(familyMember);
+        parent.getValue().getListOfChildren().remove(familyMember.getValue());
+        
+        
+        
+    }
+    
+     @FXML
+    private FamilyMember handleOpen() {
+        FileChooser fileChooser = new FileChooser();
+
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(
+                "ROOT files (*.root)", "*.root");
+        fileChooser.getExtensionFilters().add(extFilter);
+
+        File file = fileChooser.showOpenDialog(new Stage());
+        
+        try{
+            
+        loadFamilyTreeRootFromFile(file);
+        
+        } catch (Exception ex){
+            
+        }
+        
+        return root.getValue();
+        
+    }
+    
+    
+    @FXML
+    private void handleSave() {
+        File portfolioFile = getFamilyTreeRootFilePath();
+        if (portfolioFile != null) {
+            saveFamilyTreeRootToFile(portfolioFile);
+        } else {
+            handleSaveAs();
+        }
+    }
+
+    @FXML
+    private void handleSaveAs() {
+        FileChooser fileChooser = new FileChooser();
+
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(
+                "ROOT files (*.root)", "*.root");
+        fileChooser.getExtensionFilters().add(extFilter);
+
+        File file = fileChooser.showSaveDialog(new Stage());
+
+        if (file != null) {
+            if (!file.getPath().endsWith(".root")) {
+                file = new File(file.getPath() + ".root");
+            }
+            saveFamilyTreeRootToFile(file);
+        }
+    }
+
+    @FXML
+    private void handleExit() {
+        System.exit(0);
+    }
+    
+    @FXML
+    private void handleMnuInfo(ActionEvent event) {
+       
+        
+    }
+
+    @FXML
+    private void handleMnuAddNewMember(ActionEvent event) {
+        
+        TreeItem<FamilyMember> parent = treeView.getSelectionModel().getSelectedItem();
+        if (parent==null) {
+          parent = treeView.getRoot();
+        }
+        
+        final FamilyMember newMember = new FamilyMember("new member");
+        
+        final TreeItem<FamilyMember> newNode = new TreeItem<>(newMember);
+        parent.getChildren().add(newNode);
+        parent.getValue().getListOfChildren().add(newMember);
+        parent.setExpanded(true);
+        treeView.getSelectionModel().select(newNode);
+        
+    }
+
+    @FXML
+    private void handleMnuDelete(ActionEvent event) {
+        
+        TreeItem<FamilyMember> parent = treeView.getSelectionModel().getSelectedItem().getParent();
+        TreeItem<FamilyMember> familyMember = treeView.getSelectionModel().getSelectedItem();
+        familyMember.getParent().getChildren().remove(familyMember);
+        parent.getValue().getListOfChildren().remove(familyMember.getValue());
+        
+    }
+
+    
     //
     //######################################################################################
-    //   Saving to and retrieving from a file Section
+    //
+    //  Saving to and retrieving from a file Section
     //
     //  return the file path of the saved data if one is saved
     public File getFamilyTreeRootFilePath() {
@@ -273,62 +391,7 @@ public class FamilyTreeFXMLController implements Initializable {
         }
         
     }
-        
-    @FXML
-    private FamilyMember handleOpen() {
-        FileChooser fileChooser = new FileChooser();
 
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(
-                "ROOT files (*.root)", "*.root");
-        fileChooser.getExtensionFilters().add(extFilter);
-
-        File file = fileChooser.showOpenDialog(new Stage());
-        
-        try{
-            
-        loadFamilyTreeRootFromFile(file);
-        
-        } catch (Exception ex){
-            
-        }
-        
-        
-        return gerry;
-        
-    }
     
     
-    @FXML
-    private void handleSave() {
-        File portfolioFile = getFamilyTreeRootFilePath();
-        if (portfolioFile != null) {
-            saveFamilyTreeRootToFile(portfolioFile);
-        } else {
-            handleSaveAs();
-        }
-    }
-
-    @FXML
-    private void handleSaveAs() {
-        FileChooser fileChooser = new FileChooser();
-
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(
-                "ROOT files (*.root)", "*.root");
-        fileChooser.getExtensionFilters().add(extFilter);
-
-        File file = fileChooser.showSaveDialog(new Stage());
-
-        if (file != null) {
-            if (!file.getPath().endsWith(".root")) {
-                file = new File(file.getPath() + ".root");
-            }
-            saveFamilyTreeRootToFile(file);
-        }
-    }
-
-    @FXML
-    private void handleExit() {
-        System.exit(0);
-    }
-
 }

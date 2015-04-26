@@ -5,15 +5,12 @@
  */
 package familytree;
 
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.TreeCell;
-import javafx.scene.control.TreeItem;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 
 /**
  *
@@ -24,13 +21,20 @@ public class FamilyMemberCellFactory extends TreeCell<FamilyMember> {
     Node leafIcon = new ImageView("familytree/leaf.png");
     Node branchIcon = new ImageView("familytree/branch.png");
     private Tooltip tooltip = new Tooltip();
-    private ContextMenu addMenu = new ContextMenu();
+    TreeCell<FamilyMember> treeCell = new TreeCell<>();
+    
     
     public FamilyMemberCellFactory (){
         
-        
-        
+        treeCell.setOnDragDetected((MouseEvent mouseEvent) -> {
+            
+            
+        });
+
+           
     }
+    
+    
     
     @Override
     public void updateItem(FamilyMember item, boolean empty) {
@@ -41,7 +45,6 @@ public class FamilyMemberCellFactory extends TreeCell<FamilyMember> {
             setGraphic(null);
         } else {
             setText(getString());
-            //setGraphic(getTreeItem().getGraphic());
             tooltip.setText(getItem().printInfo());
             setTooltip(tooltip);
             if(getItem().getListOfChildren().size() != 0)
@@ -52,7 +55,7 @@ public class FamilyMemberCellFactory extends TreeCell<FamilyMember> {
         }
                 
     }
-
+    
     private String getString() {
         return getItem() == null ? "" : getItem().toString();
     }
