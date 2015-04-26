@@ -61,6 +61,7 @@ public class FamilyTreeFXMLController implements Initializable {
     private TreeItem<FamilyMember> root = null;
 
     private FamilyMember selectedFamilyMember = null;
+    private TreeItem<FamilyMember> selectedTreeItem = null;
     private FamilyMember rootFamilyMember = null;
     
     private NumberFormat format = NumberFormat.getInstance();
@@ -144,6 +145,8 @@ public class FamilyTreeFXMLController implements Initializable {
     private final ChangeListener<TreeItem<FamilyMember>> treeSelectionListener
             = (ov, oldValue, newValue) -> {
                 TreeItem<FamilyMember> treeItem = newValue;
+                
+                selectedTreeItem = newValue;
 
                 selectedFamilyMember = new FamilyMember(treeItem.getValue());
                 
@@ -172,17 +175,31 @@ public class FamilyTreeFXMLController implements Initializable {
 
     @FXML
     private void btnUpdate_Click(ActionEvent event) {
+        
 
     }
 
     @FXML
     private void btnAddMember_Clicked(ActionEvent event) {
-        selectedFamilyMember.getListOfChildren().add(new FamilyMember("New Member"));
-        
-        familyTreeGenerator(root);
-
-        treeView.setRoot(root);
+        //selectedFamilyMember.getListOfChildren().add(new FamilyMember("New Member"));
+        //selectedTreeItem.getChildren().add(new TreeItem<>(new FamilyMember("New Member")));
         //treeItem.getValue().getListOfChildren().add(new FamilyMember("New Member"));
+        
+        TreeItem<FamilyMember> parent = treeView.getSelectionModel().getSelectedItem();
+        if (parent==null) {
+          parent = treeView.getRoot();
+        }
+        
+        final FamilyMember newMember = new FamilyMember("new member");
+        
+        final TreeItem<FamilyMember> newNode = new TreeItem<>(newMember);
+        parent.getChildren().add(newNode);
+        parent.getValue().getListOfChildren().add(newMember);
+        parent.setExpanded(true);
+        treeView.getSelectionModel().select(newNode);
+        
+        System.out.println(root.getValue().getListOfChildren());
+        
     }
     
     //
@@ -221,7 +238,7 @@ public class FamilyTreeFXMLController implements Initializable {
             m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
             FamilyMemberWrapper saveWrapper = new FamilyMemberWrapper();
-            saveWrapper.setFamilyTreeRoot(gerry);
+            saveWrapper.setFamilyTreeRoot(root.getValue());
 
             m.marshal(saveWrapper, file);
 

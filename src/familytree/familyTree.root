@@ -41,6 +41,13 @@
                     <spouseName>Single</spouseName>
                     <stateOfResidence>Illinois</stateOfResidence>
                 </listOfChildren>
+                <listOfChildren xsi:type="familyMember">
+                    <age>0</age>
+                    <name>new member</name>
+                    <nationality></nationality>
+                    <spouseName></spouseName>
+                    <stateOfResidence></stateOfResidence>
+                </listOfChildren>
                 <name>Kevin Budd</name>
                 <nationality>American</nationality>
                 <spouseName>Lucy</spouseName>
