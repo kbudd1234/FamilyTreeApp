@@ -31,40 +31,12 @@ import javax.xml.bind.Unmarshaller;
  * @author kevinbudd
  */
 public class FamilyTreeFXMLController implements Initializable {
-    
-    
-    private FamilyMember gerry = new FamilyMember("Gerry DeGraff", 83, "Richard", "American", "Illinois");
-    private FamilyMember lynn = new FamilyMember("Lynn Budd", 56, "Mike", "American", "Illinois");
-    private FamilyMember jody = new FamilyMember("Jody Land", 54, "Jay", "American", "Illinois");
-    private FamilyMember jeanine = new FamilyMember("Jeanine DeGraff", 52, "Single", "American", "Florida");
-    private FamilyMember christine = new FamilyMember("Christine Dawson", 50, "Dan", "American", "Illinois");
-    private FamilyMember kelly = new FamilyMember("Kelly Dawson", 24, "Single", "American", "Illinois");
-    private FamilyMember scott = new FamilyMember("Scott Dawson", 22, "Single", "American", "Illinois");
-    private FamilyMember kevinDawson = new FamilyMember("Kevin Dawson", 20, "Single", "American", "Illinois");
-    private FamilyMember bradley = new FamilyMember("Bradley Dawson", 18, "Single", "American", "Illinois");
-    private FamilyMember kevin = new FamilyMember("Kevin Budd", 31, "Lucy", "American", "Illinois");
-    private FamilyMember bridget = new FamilyMember("Bridget Land", 19, "Single", "American", "Illinois");
-    private FamilyMember erin = new FamilyMember("Erin Land", 17, "Single", "American", "Illinois");
-    private FamilyMember jennifer = new FamilyMember("Jennifer Land", 15, "Single", "American", "Illinois");
-    private FamilyMember kurt = new FamilyMember("Kurt Land", 12, "Single", "American", "Illinois");
-    private FamilyMember lucy = new FamilyMember("Lucy Mara", 28, "Kevin", "American", "Illinois");
-    private FamilyMember ever = new FamilyMember("Ever Budd", 1, "Single", "American", "Illinois");
-    private FamilyMember mike = new FamilyMember("Mike Budd", 56, "Lynn", "American", "Illinois");
-    private FamilyMember jen = new FamilyMember("Jennifer Bredberg", 34, "Jim", "American", "Illinois");
-    private FamilyMember chris = new FamilyMember("Chris Budd", 33, "Kate", "American", "Illinois");
-    private FamilyMember kyle = new FamilyMember("Kyle Budd", 30, "Single", "American", "Illinois");
-    private FamilyMember ben = new FamilyMember("Ben Bredberg", 4, "Single", "American", "Illinois");
-    private FamilyMember madelyn = new FamilyMember("Madelyn Bredberg", 2, "Single", "American", "Illinois");
     private FamilyMember blankRoot = new FamilyMember("Family Tree");
-    
     private TreeItem<FamilyMember> root = null;
-
     private FamilyMember selectedFamilyMember = null;
     private TreeItem<FamilyMember> selectedTreeItem = null;
     private FamilyMember rootFamilyMember = null;
-    
     private NumberFormat format = NumberFormat.getInstance();
-
     @FXML
     private TextField txtName;
     @FXML
@@ -81,9 +53,6 @@ public class FamilyTreeFXMLController implements Initializable {
     private TreeView<FamilyMember> treeView;
     @FXML
     private Button btnUpdate;
-    
-    private TreeItem<FamilyMember> branch;
-    private TreeItem<FamilyMember> leaf;
     @FXML
     private Button btnAddMember;
     @FXML
@@ -105,16 +74,6 @@ public class FamilyTreeFXMLController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        /*
-        kevin.getListOfChildren().add(ever);
-        jen.getListOfChildren().addAll(ben, madelyn);
-        lynn.getListOfChildren().addAll(jen, chris, kevin, kyle);
-        jody.getListOfChildren().addAll(bridget, erin, jennifer, kurt);
-        christine.getListOfChildren().addAll(kelly, scott, kevinDawson, bradley);
-        gerry.getListOfChildren().addAll(lynn, jody, jeanine, christine);
-        */
-        
-        //root = new TreeItem<>(handleOpen());
         
         root = new TreeItem<>(blankRoot);
         
@@ -127,7 +86,6 @@ public class FamilyTreeFXMLController implements Initializable {
         treeView.setEditable(true);
 
         treeView.setCellFactory((TreeView<FamilyMember> fm) -> new FamilyMemberCellFactory());
-        
         
     }
     
@@ -154,17 +112,12 @@ public class FamilyTreeFXMLController implements Initializable {
                 
                 selectedTreeItem = newValue;
 
-                selectedFamilyMember = new FamilyMember(treeItem.getValue());
+                selectedFamilyMember = treeItem.getValue();
                 
                 familyMemberTextFieldBindings(selectedFamilyMember);
                 
             };
     
-    private final ChangeListener<FamilyMember> familyMemberListener 
-            = (ov, oldValue, newValue) -> {
-              FamilyMember familyMemberItem = newValue;  
-            };
-
     private void clearTextFields() {
         txtName.setText("");
         txtAge.setText("");
@@ -175,14 +128,12 @@ public class FamilyTreeFXMLController implements Initializable {
     }
 
     private void familyMemberTextFieldBindings(FamilyMember fm) {
-        
         txtName.textProperty().bindBidirectional(fm.nameProperty());
         txtAge.textProperty().bindBidirectional(new SimpleIntegerProperty(fm.ageProperty().getValue()), format);
         txtSpouseName.textProperty().bindBidirectional(fm.spouseNameProperty());
         txtNumberOfChildren.textProperty().bindBidirectional(new SimpleIntegerProperty(fm.listOfChildrenProperty().size()), format);
         txtNationality.textProperty().bindBidirectional(fm.nationalityProperty());
         txtStateOfResidence.textProperty().bindBidirectional(fm.stateOfResidenceProperty());
-        
     }
 
     //
@@ -205,10 +156,13 @@ public class FamilyTreeFXMLController implements Initializable {
         
         //treeView.getSelectionModel().getSelectedItem().setValue(updatedMember);
         treeView.getSelectionModel().getSelectedItem().setValue(updatedMember);
-        //TreeItem<FamilyMember> parent = treeView.getSelectionModel().getSelectedItem().getParent();
         
-        selectedFamilyMember.nameProperty().bindBidirectional(txtName.textProperty());
-        //selectedFamilyMember.ageProperty().bindBidirectional(new SimpleIntegerProperty(Integer.parseInt(txtAge.textProperty())), format);
+        TreeItem<FamilyMember> parent = treeView.getSelectionModel().getSelectedItem().getParent();
+        
+        int i = parent.getValue().getListOfChildren().indexOf(selectedFamilyMember);
+        parent.getValue().getListOfChildren().remove(selectedTreeItem);
+        parent.getValue().getListOfChildren().add(i, updatedMember);
+        
         
     }
 
@@ -397,9 +351,9 @@ public class FamilyTreeFXMLController implements Initializable {
             
             FamilyMemberWrapper LoadWrapper = (FamilyMemberWrapper) um.unmarshal(file);
 
-            rootFamilyMember = new FamilyMember(LoadWrapper.getFamilyTreeRoot());
+            //rootFamilyMember = new FamilyMember(LoadWrapper.getFamilyTreeRoot());
             
-            root = new TreeItem<>(rootFamilyMember);
+            root = new TreeItem<>(new FamilyMember(LoadWrapper.getFamilyTreeRoot()));
             
             familyTreeGenerator(root);
 
