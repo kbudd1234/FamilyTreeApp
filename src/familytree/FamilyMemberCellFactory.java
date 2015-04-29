@@ -5,7 +5,6 @@
  */
 package familytree;
 
-import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.TreeCell;
@@ -26,15 +25,8 @@ public class FamilyMemberCellFactory extends TreeCell<FamilyMember> {
     
     public FamilyMemberCellFactory (){
         
-        treeCell.setOnDragDetected((MouseEvent mouseEvent) -> {
-            
-            
-        });
-
-           
+  
     }
-    
-    
     
     @Override
     public void updateItem(FamilyMember item, boolean empty) {
