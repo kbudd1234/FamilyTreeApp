@@ -5,11 +5,14 @@
  */
 package familytree;
 
+import javafx.event.EventHandler;
 import javafx.scene.Node;
+import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.TreeCell;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 
 /**
  *
@@ -19,14 +22,32 @@ public class FamilyMemberCellFactory extends TreeCell<FamilyMember> {
     
     Node leafIcon = new ImageView("familytree/leaf.png");
     Node branchIcon = new ImageView("familytree/branch.png");
-    private Tooltip tooltip = new Tooltip();
+    private final Tooltip tooltip;
     TreeCell<FamilyMember> treeCell = new TreeCell<>();
-    
+    private TextField textField = new TextField();
     
     public FamilyMemberCellFactory (){
-        
-  
+        this.tooltip = new Tooltip();
     }
+    
+    @Override
+        public void startEdit() {
+            super.startEdit();
+ 
+            if (textField == null) {
+                createTextField();
+            }
+            setText(null);
+            setGraphic(textField);
+            textField.selectAll();
+        }
+ 
+        @Override
+        public void cancelEdit() {
+            super.cancelEdit();
+            setText(getItem().getName());
+            setGraphic(getTreeItem().getGraphic());
+        }
     
     @Override
     public void updateItem(FamilyMember item, boolean empty) {
@@ -36,17 +57,36 @@ public class FamilyMemberCellFactory extends TreeCell<FamilyMember> {
             setText(null);
             setGraphic(null);
         } else {
-            setText(getString());
-            tooltip.setText(getItem().printInfo());
-            setTooltip(tooltip);
-            if(getItem().getListOfChildren().size() != 0)
-                setGraphic(branchIcon);
-            else
-                setGraphic(leafIcon);
+            if (isEditing()) {
+                if (textField != null) {
+                    textField.setText(getString());
+                }
+                setText(null);
+                setGraphic(textField);
+            } else {
+                setText(getString());
+                tooltip.setText(getItem().printInfo());
+                setTooltip(tooltip);
+                if(getItem().getListOfChildren().size() != 0)
+                    setGraphic(branchIcon);
+                else
+                    setGraphic(leafIcon);
+            }
             
         }
                 
     }
+    
+    private void createTextField() {
+            textField = new TextField(getString());
+            textField.setOnKeyReleased((KeyEvent t) -> {
+                if (t.getCode() == KeyCode.ENTER) {
+                    //commitEdit(textField.getText());
+                } else if (t.getCode() == KeyCode.ESCAPE) {
+                    cancelEdit();
+                }
+            });
+        }
     
     private String getString() {
         return getItem() == null ? "" : getItem().toString();
