@@ -28,6 +28,7 @@
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
+                  <MenuItem fx:id="mnuNew" mnemonicParsing="false" onAction="#handleNew" text="New" />
               <MenuItem fx:id="mnuOpen" mnemonicParsing="false" onAction="#handleOpen" text="Open" />
                   <MenuItem fx:id="mnuSave" mnemonicParsing="false" onAction="#handleSave" text="Save" />
                   <MenuItem fx:id="mnuSaveAs" mnemonicParsing="false" onAction="#handleSaveAs" text="Save As" />
