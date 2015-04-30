@@ -11,6 +11,7 @@ import java.text.NumberFormat;
 import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -151,7 +152,8 @@ public class FamilyTreeFXMLController implements Initializable {
                 if (oldValue!=null){
                     ((TreeItem<FamilyMember>)oldValue).getValue().nameProperty().unbindBidirectional(txtName.textProperty());
                     txtName.clear();
-                    txtAge.textProperty().unbindBidirectional(((TreeItem<FamilyMember>)oldValue).getValue().ageProperty());
+                    //txtAge.textProperty().unbindBidirectional(((TreeItem<FamilyMember>)oldValue).getValue().ageProperty());
+                    //(((TreeItem<FamilyMember>)oldValue).getValue().ageProperty().unbindBidirectional(txtAge.textProperty()));
                     txtAge.clear();
                     txtNumberOfChildren.textProperty().unbindBidirectional(((TreeItem<FamilyMember>)oldValue).getValue().getListOfChildren().size());
                     txtNumberOfChildren.clear();
@@ -169,11 +171,11 @@ public class FamilyTreeFXMLController implements Initializable {
                     txtName.setText(((TreeItem<FamilyMember>)newValue).getValue().nameProperty().getValue());
                     ((TreeItem<FamilyMember>)newValue).getValue().nameProperty().bindBidirectional(txtName.textProperty());
                     txtAge.setText((((TreeItem<FamilyMember>)newValue).getValue().ageProperty().getValue()).toString());
-                    txtAge.textProperty().bindBidirectional(new SimpleIntegerProperty((((TreeItem<FamilyMember>)newValue).getValue().ageProperty().getValue())), format);
+                    txtAge.textProperty().bindBidirectional(new SimpleIntegerProperty((((TreeItem<FamilyMember>)newValue).getValue().ageProperty().getValue())),format);
                     txtSpouseName.setText(((TreeItem<FamilyMember>)newValue).getValue().spouseNameProperty().getValue());
                     ((TreeItem<FamilyMember>)newValue).getValue().spouseNameProperty().bindBidirectional(txtSpouseName.textProperty());
-                    //txtNumberOfChildren.setText((((TreeItem<FamilyMember>)newValue).getValue().getListOfChildren().;
-                    txtAge.textProperty().bindBidirectional(new SimpleIntegerProperty((((TreeItem<FamilyMember>)newValue).getValue().ageProperty().getValue())), format);
+                    txtNumberOfChildren.setText(String.valueOf(((TreeItem<FamilyMember>)newValue).getValue().getListOfChildren().size()));
+                    txtNumberOfChildren.textProperty().bindBidirectional(new SimpleIntegerProperty((((TreeItem<FamilyMember>)newValue).getValue().getListOfChildren().size())), format);
                     txtNationality.setText(((TreeItem<FamilyMember>)newValue).getValue().nationalityProperty().getValue());
                     ((TreeItem<FamilyMember>)newValue).getValue().nationalityProperty().bindBidirectional(txtNationality.textProperty());
                     txtStateOfResidence.setText(((TreeItem<FamilyMember>)newValue).getValue().stateOfResidenceProperty().getValue());
@@ -182,24 +184,6 @@ public class FamilyTreeFXMLController implements Initializable {
                 
     };
     
-    private void clearTextFields() {
-        txtName.setText("");
-        txtAge.setText("");
-        txtSpouseName.setText("");
-        txtNumberOfChildren.setText("");
-        txtNationality.setText("");
-        txtStateOfResidence.setText("");
-    }
-
-    private void familyMemberTextFieldBindings(FamilyMember fm) {
-        txtName.textProperty().bindBidirectional(fm.nameProperty());
-        txtAge.textProperty().bindBidirectional(new SimpleIntegerProperty(fm.ageProperty().getValue()), format);
-        txtSpouseName.textProperty().bindBidirectional(fm.spouseNameProperty());
-        txtNumberOfChildren.textProperty().bindBidirectional(new SimpleIntegerProperty(fm.listOfChildrenProperty().size()), format);
-        txtNationality.textProperty().bindBidirectional(fm.nationalityProperty());
-        txtStateOfResidence.textProperty().bindBidirectional(fm.stateOfResidenceProperty());
-    }
-
     //
     //######################################################################################
     //
@@ -210,7 +194,7 @@ public class FamilyTreeFXMLController implements Initializable {
     @FXML
     private void btnUpdate_Click(ActionEvent event) {
         
-        //treeView.getRoot();
+        treeView.getSelectionModel().selectedItemProperty().addListener(treeSelectionListener);
         
     }
     
