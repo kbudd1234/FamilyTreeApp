@@ -33,7 +33,7 @@
                 <stateOfResidence>Illinois</stateOfResidence>
             </listOfChildren>
             <listOfChildren xsi:type="familyMember">
-                <age>31</age>
+                <age>32</age>
                 <listOfChildren xsi:type="familyMember">
                     <age>1</age>
                     <name>Ever Budd</name>
@@ -43,7 +43,7 @@
                 </listOfChildren>
                 <name>Kevin Budd</name>
                 <nationality>American</nationality>
-                <spouseName>Lucy Mara</spouseName>
+                <spouseName>Lucy</spouseName>
                 <stateOfResidence>Illinois</stateOfResidence>
             </listOfChildren>
             <listOfChildren xsi:type="familyMember">

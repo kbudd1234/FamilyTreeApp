@@ -11,7 +11,6 @@ import java.text.NumberFormat;
 import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -74,28 +73,28 @@ public class FamilyTreeFXMLController implements Initializable {
     @FXML
     private MenuItem mnuDelete;
     
-    private FamilyMember gerry = new FamilyMember("Gerry DeGraff", 83, "Richard", "American", "Illinois");
-    private FamilyMember lynn = new FamilyMember("Lynn Budd", 56, "Mike", "American", "Illinois");
-    private FamilyMember jody = new FamilyMember("Jody Land", 54, "Jay", "American", "Illinois");
-    private FamilyMember jeanine = new FamilyMember("Jeanine DeGraff", 52, "Single", "American", "Florida");
-    private FamilyMember christine = new FamilyMember("Christine Dawson", 50, "Dan", "American", "Illinois");
-    private FamilyMember kelly = new FamilyMember("Kelly Dawson", 24, "Single", "American", "Illinois");
-    private FamilyMember scott = new FamilyMember("Scott Dawson", 22, "Single", "American", "Illinois");
-    private FamilyMember kevinDawson = new FamilyMember("Kevin Dawson", 20, "Single", "American", "Illinois");
-    private FamilyMember bradley = new FamilyMember("Bradley Dawson", 18, "Single", "American", "Illinois");
-    private FamilyMember kevin = new FamilyMember("Kevin Budd", 31, "Lucy", "American", "Illinois");
-    private FamilyMember bridget = new FamilyMember("Bridget Land", 19, "Single", "American", "Illinois");
-    private FamilyMember erin = new FamilyMember("Erin Land", 17, "Single", "American", "Illinois");
-    private FamilyMember jennifer = new FamilyMember("Jennifer Land", 15, "Single", "American", "Illinois");
-    private FamilyMember kurt = new FamilyMember("Kurt Land", 12, "Single", "American", "Illinois");
-    private FamilyMember lucy = new FamilyMember("Lucy Mara", 28, "Kevin", "American", "Illinois");
-    private FamilyMember ever = new FamilyMember("Ever Budd", 1, "Single", "American", "Illinois");
-    private FamilyMember mike = new FamilyMember("Mike Budd", 56, "Lynn", "American", "Illinois");
-    private FamilyMember jen = new FamilyMember("Jennifer Bredberg", 34, "Jim", "American", "Illinois");
-    private FamilyMember chris = new FamilyMember("Chris Budd", 33, "Kate", "American", "Illinois");
-    private FamilyMember kyle = new FamilyMember("Kyle Budd", 30, "Single", "American", "Illinois");
-    private FamilyMember ben = new FamilyMember("Ben Bredberg", 4, "Single", "American", "Illinois");
-    private FamilyMember madelyn = new FamilyMember("Madelyn Bredberg", 2, "Single", "American", "Illinois");
+    private FamilyMember gerry = new FamilyMember("Gerry DeGraff", "83", "Richard", "American", "Illinois");
+    private FamilyMember lynn = new FamilyMember("Lynn Budd", "56", "Mike", "American", "Illinois");
+    private FamilyMember jody = new FamilyMember("Jody Land", "54", "Jay", "American", "Illinois");
+    private FamilyMember jeanine = new FamilyMember("Jeanine DeGraff", "52", "Single", "American", "Florida");
+    private FamilyMember christine = new FamilyMember("Christine Dawson", "50", "Dan", "American", "Illinois");
+    private FamilyMember kelly = new FamilyMember("Kelly Dawson", "24", "Single", "American", "Illinois");
+    private FamilyMember scott = new FamilyMember("Scott Dawson", "22", "Single", "American", "Illinois");
+    private FamilyMember kevinDawson = new FamilyMember("Kevin Dawson", "20", "Single", "American", "Illinois");
+    private FamilyMember bradley = new FamilyMember("Bradley Dawson", "18", "Single", "American", "Illinois");
+    private FamilyMember kevin = new FamilyMember("Kevin Budd", "31", "Lucy", "American", "Illinois");
+    private FamilyMember bridget = new FamilyMember("Bridget Land", "19", "Single", "American", "Illinois");
+    private FamilyMember erin = new FamilyMember("Erin Land", "17", "Single", "American", "Illinois");
+    private FamilyMember jennifer = new FamilyMember("Jennifer Land", "15", "Single", "American", "Illinois");
+    private FamilyMember kurt = new FamilyMember("Kurt Land", "12", "Single", "American", "Illinois");
+    private FamilyMember lucy = new FamilyMember("Lucy Mara", "28", "Kevin", "American", "Illinois");
+    private FamilyMember ever = new FamilyMember("Ever Budd", "1", "Single", "American", "Illinois");
+    private FamilyMember mike = new FamilyMember("Mike Budd", "56", "Lynn", "American", "Illinois");
+    private FamilyMember jen = new FamilyMember("Jennifer Bredberg", "34", "Jim", "American", "Illinois");
+    private FamilyMember chris = new FamilyMember("Chris Budd", "33", "Kate", "American", "Illinois");
+    private FamilyMember kyle = new FamilyMember("Kyle Budd", "30", "Single", "American", "Illinois");
+    private FamilyMember ben = new FamilyMember("Ben Bredberg", "4", "Single", "American", "Illinois");
+    private FamilyMember madelyn = new FamilyMember("Madelyn Bredberg", "2", "Single", "American", "Illinois");
     @FXML
     private MenuItem mnuNew;
 
@@ -152,10 +151,9 @@ public class FamilyTreeFXMLController implements Initializable {
                 if (oldValue!=null){
                     ((TreeItem<FamilyMember>)oldValue).getValue().nameProperty().unbindBidirectional(txtName.textProperty());
                     txtName.clear();
-                    //txtAge.textProperty().unbindBidirectional(((TreeItem<FamilyMember>)oldValue).getValue().ageProperty());
-                    //(((TreeItem<FamilyMember>)oldValue).getValue().ageProperty().unbindBidirectional(txtAge.textProperty()));
+                    ((TreeItem<FamilyMember>)oldValue).getValue().ageProperty().unbindBidirectional(txtAge.textProperty());
                     txtAge.clear();
-                    txtNumberOfChildren.textProperty().unbindBidirectional(((TreeItem<FamilyMember>)oldValue).getValue().getListOfChildren().size());
+                    txtNumberOfChildren.textProperty().unbindBidirectional(new SimpleIntegerProperty(((TreeItem<FamilyMember>)oldValue).getValue().getListOfChildren().size()));
                     txtNumberOfChildren.clear();
                     ((TreeItem<FamilyMember>)oldValue).getValue().spouseNameProperty().unbindBidirectional(txtSpouseName.textProperty());
                     txtSpouseName.clear();
@@ -170,8 +168,8 @@ public class FamilyTreeFXMLController implements Initializable {
                 if (newValue!=null){
                     txtName.setText(((TreeItem<FamilyMember>)newValue).getValue().nameProperty().getValue());
                     ((TreeItem<FamilyMember>)newValue).getValue().nameProperty().bindBidirectional(txtName.textProperty());
-                    txtAge.setText((((TreeItem<FamilyMember>)newValue).getValue().ageProperty().getValue()).toString());
-                    txtAge.textProperty().bindBidirectional(new SimpleIntegerProperty((((TreeItem<FamilyMember>)newValue).getValue().ageProperty().getValue())),format);
+                    txtAge.setText(((TreeItem<FamilyMember>)newValue).getValue().ageProperty().getValue());
+                    ((TreeItem<FamilyMember>)newValue).getValue().ageProperty().bindBidirectional(txtAge.textProperty());
                     txtSpouseName.setText(((TreeItem<FamilyMember>)newValue).getValue().spouseNameProperty().getValue());
                     ((TreeItem<FamilyMember>)newValue).getValue().spouseNameProperty().bindBidirectional(txtSpouseName.textProperty());
                     txtNumberOfChildren.setText(String.valueOf(((TreeItem<FamilyMember>)newValue).getValue().getListOfChildren().size()));
@@ -194,8 +192,8 @@ public class FamilyTreeFXMLController implements Initializable {
     @FXML
     private void btnUpdate_Click(ActionEvent event) {
         
-        treeView.getSelectionModel().selectedItemProperty().addListener(treeSelectionListener);
-        
+        int index = selectedTreeItem.getParent().getChildren().indexOf(selectedTreeItem);
+        selectedTreeItem.getParent().getChildren().set(index, selectedTreeItem);
     }
     
     @FXML

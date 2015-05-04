@@ -24,7 +24,7 @@ import javax.xml.bind.annotation.XmlElement;
 @XmlRootElement
 public class FamilyMember {
     private final StringProperty name = new SimpleStringProperty(this, "name", "");
-    private final IntegerProperty age = new SimpleIntegerProperty(this, "age", 0);
+    private final StringProperty age = new SimpleStringProperty(this, "age", "");
     private final StringProperty spouseName = new SimpleStringProperty(this, "spouseName", "");
     private final ListProperty<FamilyMember> listOfChildren = new SimpleListProperty<>(FXCollections.observableArrayList());
     private final StringProperty nationality = new SimpleStringProperty(this, "nationality", "");
@@ -40,7 +40,7 @@ public class FamilyMember {
         this.name.set(name);
     }
     
-    public FamilyMember(String name, int age, String spouse, String nationality, String stateOfResidence) {
+    public FamilyMember(String name, String age, String spouse, String nationality, String stateOfResidence) {
         this.name.set(name);
         this.age.set(age);
         this.spouseName.set(spouse);
@@ -69,15 +69,15 @@ public class FamilyMember {
         return name;
     }
     
-    public int getAge() {
+    public String getAge() {
         return age.get();
     }
     @XmlElement
-    public void setAge(int value) {
+    public void setAge(String value) {
         age.set(value);
     }
 
-    public IntegerProperty ageProperty() {
+    public StringProperty ageProperty() {
         return age;
     }
     public String getSpouseName() {
